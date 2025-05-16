@@ -1,0 +1,7 @@
+===============================concepts=============================
+
+Optional Chaining
+
+In the context of JWT authentication, "Bearer" is just a keyword used in the Authorization header to indicate that the client is sending a bearer token.
+
+This is a JavaScript string method. -> startsWith()
