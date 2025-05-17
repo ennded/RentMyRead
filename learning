@@ -5,3 +5,9 @@ Optional Chaining
 In the context of JWT authentication, "Bearer" is just a keyword used in the Authorization header to indicate that the client is sending a bearer token.
 
 This is a JavaScript string method. -> startsWith()
+
+process is a global object provided by Node.js that gives you information about, and control over, the current Node.js process (the running instance of your application).
+
+Content-Type: application/json-> it is an HTTP header that tells the server or client:
+
+“The data being sent is in JSON (JavaScript Object Notation) format.”

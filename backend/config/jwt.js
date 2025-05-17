@@ -4,7 +4,7 @@ const generateToken = (userId, role) => {
   return jwt.sign(
     { id: userId, role }, // payload
     process.env.JWT_SECRET, // secret key used for signing
-    { expiresIn: "30d" } // options (expirations belongs to payload)
+    { expiresIn: "1d" } // options (expirations belongs to payload)
   );
 };
 

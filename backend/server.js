@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const connectDB = require("./config/db");
+const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 
@@ -10,6 +11,7 @@ const app = express();
 app.use(helmet()); //security headers
 app.use(cors()); // cross orgin resource sharing
 app.use(express.json()); // body parser
+app.use("/api/auth", authRoutes);
 
 connectDB();
 
