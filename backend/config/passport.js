@@ -60,3 +60,24 @@ passport.use(
     }
   )
 );
+
+// Common social login handler
+const handleSocialLogin = async (profile, provider, done) => {
+  try {
+    let user = await User.findOne({ email: Profiler.emails[0].value });
+    if (!user) {
+      user = await User.create({
+        name:
+          profile.display ||
+          `${profile.name.givenName} ${profile.name.familyName}`,
+        email: profile.emails[0].value,
+        password: `social-${provider}-{profile.id}`,
+        provider, //dummy password
+        providerId: profile.id,
+      });
+    }
+    done(null, user);
+  } catch (error) {
+    done(error, null);
+  }
+};
