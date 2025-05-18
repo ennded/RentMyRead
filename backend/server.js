@@ -4,6 +4,8 @@ const cors = require("cors");
 const helmet = require("helmet");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
+const passport = require("passport");
+require("./config/passport");
 
 const app = express();
 
@@ -12,6 +14,7 @@ app.use(helmet()); //security headers
 app.use(cors()); // cross orgin resource sharing
 app.use(express.json()); // body parser
 app.use("/api/auth", authRoutes);
+app.use(passport.initialize());
 
 connectDB();
 
