@@ -3,6 +3,7 @@ const { generateToken } = require("../config/jwt");
 const User = require("../models/User");
 const passport = require("passport");
 const bcrypt = require("bcryptjs");
+const { protect } = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -95,7 +96,7 @@ router.post("/login", async (req, res) => {
 
 // @desc    Get current user profile
 // @route   GET /api/auth/me
-router.get("/me", exports.protect, (req, res) => {
+router.get("/me", protect, (req, res) => {
   res.json(req.user);
 });
 
