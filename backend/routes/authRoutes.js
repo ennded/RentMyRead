@@ -1,5 +1,4 @@
 const express = require("express");
-const bcrypt = require("bcryptjs");
 const { generateToken } = require("../config/jwt");
 const User = require("../models/User");
 const router = express.Router();
@@ -7,10 +6,11 @@ const router = express.Router();
 // @desc    Register user
 // @route   POST /api/auth/register
 router.post("/register", async (req, res) => {
-  const { name, email, password, role, secretCode } = req.body;
+  const { name, email, password, role } = req.body;
 
-  if (role === "admin" && secretCode !== process.env.ADMIN_SECRET) {
-    return res.status(400).json({ message: "Invalid  admin secret code" });
+  // Admin registration requires secret code (simplified)
+  if (role === "admin" && req.body.secretCode !== "ADMIN_SECRET_123") {
+    return res.status(400).json({ message: "Invalid admin secret code" });
   }
 
   try {
@@ -22,8 +22,8 @@ router.post("/register", async (req, res) => {
       role: user.role,
       token: generateToken(user._id, user.role),
     });
-  } catch (error) {
-    res.status(400).json({ message: "User already exist" });
+  } catch (err) {
+    res.status(400).json({ message: "User already exists" });
   }
 });
 
@@ -31,10 +31,11 @@ router.post("/register", async (req, res) => {
 // @route   POST /api/auth/login
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
+
   const user = await User.findOne({ email }).select("+password");
 
   if (!user || !(await bcrypt.compare(password, user.password))) {
-    return res.status(401).json({ message: "Invalid Credentials" });
+    return res.status(401).json({ message: "Invalid credentials" });
   }
 
   res.json({
@@ -44,6 +45,12 @@ router.post("/login", async (req, res) => {
     role: user.role,
     token: generateToken(user._id, user.role),
   });
+});
+
+// @desc    Get current user profile
+// @route   GET /api/auth/me
+router.get("/me", exports.protect, (req, res) => {
+  res.json(req.user);
 });
 
 module.exports = router;

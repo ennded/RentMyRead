@@ -1,29 +1,30 @@
 const { verifyToken } = require("../config/jwt");
 const User = require("../models/User");
 
-//atthentication middleware
-
-const protect = async (req, res, next) => {
+// Protect routes (user must be logged in)
+exports.protect = async (req, res, next) => {
   let token;
   if (req.headers.authorization?.startsWith("Bearer")) {
     token = req.headers.authorization.split(" ")[1];
   }
 
   if (!token) {
-    return res.status(401).json({ message: "Not authorized, token missing" });
+    return res.status(401).json({ message: "Not authorized" });
   }
 
   try {
-    const decode = verifyToken(token);
-    const user = await User.findById(decode.id);
-
-    if (!user) return res.status(401).json({ message: "User not found" });
-
-    req.user = user;
+    const decoded = verifyToken(token);
+    req.user = await User.findById(decoded.id);
     next();
-  } catch (error) {
+  } catch (err) {
     res.status(401).json({ message: "Invalid token" });
   }
 };
 
-module.exports = { protect };
+// Role-based access (admin only)
+exports.admin = (req, res, next) => {
+  if (req.user?.role !== "admin") {
+    return res.status(403).json({ message: "Admin access required" });
+  }
+  next();
+};
